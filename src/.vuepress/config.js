@@ -4,15 +4,19 @@ import { viteBundler } from '@vuepress/bundler-vite'
 
 export default defineUserConfig({
   lang: 'en-US',
-
-  title: 'VuePress',
-  description: 'My first VuePress Site',
+  base: '/bootcamp/',
+  title: 'Bootcamp',
+  description: 'Bootcamp Site',
 
   theme: defaultTheme({
-    logo: 'https://vuejs.press/images/hero.png',
-
-    navbar: ['/', '/get-started'],
+    navbar: [
+      {
+        text: 'Home',
+        link: '/',
+      },
+    ],
   }),
 
   bundler: viteBundler(),
 })
+
