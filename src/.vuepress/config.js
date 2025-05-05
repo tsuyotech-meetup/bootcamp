@@ -18,7 +18,9 @@ export default defineUserConfig({
         link: '/',
       },
     ],
-    
+    docsBranch: 'main',
+    docsDir: 'src',
+    editLinkPattern: ':repo/blob/:branch/:path',
     repo: 'goegoe0212/bootcamp',
   }),
 
