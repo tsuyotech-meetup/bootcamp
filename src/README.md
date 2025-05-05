@@ -2,28 +2,17 @@
 home: true
 title: Home
 actions:
-  - text: Introduction
-    link: https://vuejs.press/guide/introduction.html
-    type: secondary
+  - text: Bootcampとは
+    link: /About
+    type: primary
 
 features:
-  - title: 開発
+  - title: あああ
     details: あああ
-  - title: CI/CD + 構成管理
-    details: あああ
-  - title: 監視・モニタリング
-    details: あああ
-  - title: データベース
-    details: あああ
-  - title: Webサーバー
-    details: あああ
-  - title: バックエンドアプリ
-    details: あああ
-  - title: フロントエンド
-    details: あああ
-  - title: セキュリティ
-    details: あああ
-
 
 footer: MIT Licensed
 ---
+
+## :rocket: Link
+- Dev
+  - [Docker](./dev/Docker.md)
