@@ -5,7 +5,7 @@ on:
   push:
     branches:
       # make sure this is the branch you are using
-      - cloudflare
+      - main
 
 permissions:
   contents: write
@@ -35,6 +35,7 @@ jobs:
       - name: Build Docs
         env:
           NODE_OPTIONS: --max_old_space_size=8192
+          VUEPRESS_BASE: '/'
         run: |-
           npm run src:build
           > src/.vuepress/dist/.nojekyll

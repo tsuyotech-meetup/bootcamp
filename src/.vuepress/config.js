@@ -6,7 +6,7 @@ import { searchPlugin } from '@vuepress/plugin-search'
 
 export default defineUserConfig({
   lang: 'ja-JP',
-  base: '/bootcamp/',
+  base: process.env.VUEPRESS_BASE || '/', 
   title: 'Bootcamp',
   description: 'ハンズオン資料集です。',
 

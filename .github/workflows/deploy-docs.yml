@@ -35,6 +35,7 @@ jobs:
       - name: Build Docs
         env:
           NODE_OPTIONS: --max_old_space_size=8192
+          VUEPRESS_BASE: '/bootcamp/'
         run: |-
           npm run src:build
           > src/.vuepress/dist/.nojekyll
