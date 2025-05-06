@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ja-JP">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="generator" content="VuePress 2.0.0-rc.22" />
+    <style>
+      :root {
+        --vp-c-bg: #fff;
+      }
+
+      [data-theme='dark'] {
+        --vp-c-bg: #1b1b1f;
+      }
+
+      html,
+      body {
+        background-color: var(--vp-c-bg);
+      }
+    </style>
+    <script>
+      const useChoice = localStorage.getItem('vuepress-color-scheme')
+      const systemStatus =
+        'matchMedia' in window
+          ? window.matchMedia('(prefers-color-scheme: dark)').matches
+          : false
+
+      if (useChoice === 'light') {
+        document.documentElement.dataset.theme = 'light'
+      } else if (useChoice === 'dark' || systemStatus) {
+        document.documentElement.dataset.theme = 'dark'
+      }
+    </script>
+    <title>Bootcamp</title><meta name="description" content="ハンズオン資料集です。">
+    <link rel="preload" href="/assets/style-Dssc6p-9.css" as="style"><link rel="stylesheet" href="/assets/style-Dssc6p-9.css">
+    <link rel="modulepreload" href="/assets/app-BZ3RWP-z.js"><link rel="modulepreload" href="/assets/404.html-BqMVm9Pb.js">
+    <link rel="prefetch" href="/assets/About.html-CR8V7aHg.js" as="script"><link rel="prefetch" href="/assets/index.html-BFez1XUW.js" as="script"><link rel="prefetch" href="/assets/Docker.html-BeggukO2.js" as="script">
+  </head>
+  <body>
+    <div id="app"><!--[--><div class="vp-theme-container" vp-container data-v-ec9917b8><main class="page" data-v-ec9917b8><div vp-content data-v-ec9917b8><h1 data-v-ec9917b8>404</h1><blockquote data-v-ec9917b8>How did we get here?</blockquote><a class="route-link" href="/" data-v-ec9917b8>Take me home</a></div></main></div><!--[--><!----><!--]--><!--]--></div>
+    <script type="module" src="/assets/app-BZ3RWP-z.js" defer></script>
+  </body>
+</html>
