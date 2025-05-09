@@ -36,7 +36,6 @@ jobs:
           VUEPRESS_BASE: '/bootcamp'
         run: |-
           npm run build
-          > src/.vuepress/dist/.nojekyll
 
       - name: Deploy Docs
         uses: JamesIves/github-pages-deploy-action@v4
