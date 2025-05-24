@@ -12,6 +12,8 @@ export default defineUserConfig({
 
 
   theme: defaultTheme({
+    sidebarDepth: 1,
+
     navbar: [
       {
         text: 'Home',
