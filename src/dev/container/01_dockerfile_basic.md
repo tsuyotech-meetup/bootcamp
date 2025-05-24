@@ -272,31 +272,39 @@ time docker build -t flask-app-after .
 
 **改善版Dockerfileの例**
 ```Dockerfile
-# Dockerfile.improved
+# 改善1: 軽量版イメージを使用
 FROM python:3.13-slim
 
-# 作業ディレクトリを設定
+# 改善2: 作業ディレクトリを最初に設定
 WORKDIR /app
 
-# 要件ファイルを先にコピー（キャッシュ効率化）
+# 改善3: 要件ファイルを先にコピー（キャッシュ効率化）
 COPY requirements.txt .
 
-# 依存関係をインストール
-RUN pip install --no-cache-dir -r requirements.txt
+# 改善4: 必要最小限のパッケージのみインストール
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends curl && \
+    pip install --no-cache-dir -r requirements.txt && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-# アプリケーションファイルをコピー
-COPY . .
+# 改善5: アプリケーションファイルをコピー
+COPY app/ ./app/
 
-# 非rootユーザーを作成（セキュリティ）
+# 改善6: 非rootユーザーを作成
 RUN adduser --disabled-password --no-create-home appuser && \
     chown -R appuser:appuser /app
 USER appuser
 
-# ポートを公開
+# 改善7: ポート公開
 EXPOSE 5000
 
-# アプリケーションを起動
-CMD ["python", "main.py"]
+# 改善8: ヘルスチェック追加
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:5000/health || exit 1
+
+# アプリケーション起動
+CMD ["python", "app/main.py"]
 ```
 
 **.dockerignoreファイル**
