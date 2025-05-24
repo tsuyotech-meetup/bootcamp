@@ -4,9 +4,6 @@ title: Home
 heroText: Bootcamp
 tagline: 実践的な技術学習で、現場で活躍できるエンジニアを目指そう
 actions:
-  - text: 🚀 学習を始める
-    link: /dev/container/00_container.md
-    type: primary
   - text: 📖 詳しく知る
     link: /About
     type: secondary
@@ -29,4 +26,4 @@ footer: MIT Licensed | Made with ❤️ for developers
 
 ## 🚀 学習を始める準備はできましたか？
 
-[**→ コンテナ学習をスタート**](./dev/container/00_container.md) | [**→ このBootcampについて詳しく**](/About)
+[**→ コンテナ学習をスタート**](./dev/container/00_container.md)
