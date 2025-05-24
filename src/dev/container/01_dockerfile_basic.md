@@ -279,7 +279,7 @@ FROM python:3.13-slim
 WORKDIR /app
 
 # 改善3: 要件ファイルを先にコピー（キャッシュ効率化）
-COPY requirements.txt .
+COPY ./app/requirements.txt .
 
 # 改善4: 必要最小限のパッケージのみインストール
 RUN apt-get update && \
@@ -359,46 +359,161 @@ docker stop <container_id>
 docker kill <container_id>  # 強制終了
 ```
 
+## ハンズオン4: 究極の最適化 - Distroless & マルチステージビルド
+
+### :dart: 目標
+- マルチステージビルドによる超軽量イメージの作成
+- Distrolessイメージによるセキュリティ強化
+- プロダクション品質のコンテナ構築技術の習得
+
+### :memo: 実装
+
+**1. 従来版とのイメージサイズ比較準備**
+```sh
+# ハンズオン3の改善版イメージサイズを確認
+docker images flask-app-after
+```
+
+**2. マルチステージ + Distroless Dockerfileを作成**
+```dockerfile
+# Dockerfile.distroless
+# ============================================
+# Stage 1: ビルドステージ
+# ============================================
+FROM python:3.11-slim AS builder
+
+# 依存関係をシステムにインストール
+COPY app/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+
+# ============================================
+# Stage 2: 実行ステージ（Distroless）
+# ============================================
+FROM gcr.io/distroless/python3-debian12:latest
+
+# site-packagesを直接コピー
+COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
+
+# アプリケーションファイルをコピー
+COPY --chown=nonroot:nonrootp app/ /app/
+
+# 環境変数設定
+ENV PYTHONPATH="/usr/local/lib/python3.11/site-packages"
+
+# 作業ディレクトリ設定
+WORKDIR /app
+
+# 非特権ユーザーで実行
+USER nonroot:nonroot
+
+# ポート公開
+EXPOSE 5000
+
+# アプリケーション起動
+CMD ["main.py"]
+```
+
+**2. イメージビルドと比較**
+```sh
+# 従来版のサイズ確認
+docker images flask-app-after
+
+# Distroless版をビルド
+docker build -f Dockerfile.distroless -t flask-app-distroless .
+
+# サイズ比較
+docker images flask-app-after --format "table {{.Repository}}\t{{.Tag}}\t{{.Size}}"
+docker images flask-app-distroless --format "table {{.Repository}}\t{{.Tag}}\t{{.Size}}"
+```
+
+**3. 実行と動作確認**
+```sh
+# Distroless版を実行
+docker run -p 5000:5000 flask-app-distroless
+```
+
+### :white_check_mark: 動作確認
+1. ブラウザで `http://localhost:5000` にアクセス
+
+
+### :bulb: 解説
+
+**マルチステージビルドの利点:**
+- **ビルド環境と実行環境の分離**: 開発ツールを実行イメージに含めない
+- **イメージサイズの最小化**: 必要なファイルのみを実行ステージにコピー
+- **セキュリティ向上**: 攻撃対象の最小化
+
+**Distrolessイメージの特徴:**
+- **シェルなし**: 攻撃者がシェルアクセスできない
+- **パッケージマネージャーなし**: 追加ソフトウェアをインストールできない  
+- **最小限のファイルシステム**: アプリケーション実行に必要な最小限のみ
+- **非rootユーザー**: デフォルトで非特権ユーザーで実行
+
+### :shield: セキュリティ強化の確認
+
+**コンテナ内への侵入不可能性をテスト**
+```sh
+# 標準イメージ: シェルアクセス可能
+docker run -it --rm flask-app-after bash
+# → シェルが起動する
+
+# Distrolessイメージ: シェルアクセス不可
+docker run -it --rm flask-app-distroless bash
+# → エラーが発生（シェルが存在しない）
+```
+
+**脆弱性スキャンの実践**
+```sh
+# Docker Scout を使用した脆弱性スキャン（Docker Desktop必要）
+docker scout cves flask-app-after
+docker scout cves flask-app-distroless
+```
+
+
+### :warning: 制限事項と注意点
+
+**Distrolessの制約:**
+- デバッグが困難（シェルアクセス不可）
+- トラブルシューティング時の調査方法が限定的
+- 一部のライブラリが動作しない可能性
+
+**デバッグ方法:**
+```sh
+# デバッグ用にビルドステージのイメージを作成
+docker build --target builder -t flask-debug .
+
+# ビルドステージでデバッグ
+docker run -it flask-debug bash
+```
+
+### :rocket: 発展課題
+
+1. **他のDistrolessイメージでの実装**
+   - Node.js Distroless版
+   - Java Distroless版
+
+2. **セキュリティスキャンの自動化**
+   - CI/CDパイプラインでの脆弱性チェック
+
+3. **ゼロダウンタイムデプロイメント**
+   - ヘルスチェック + ローリングアップデート
+
 ## 学習チェックリスト
 
 - [ ] ハンズオン1: Hello Worldが実行できた
 - [ ] ハンズオン2: Webページにアクセスできた  
 - [ ] ハンズオン3: 問題点を3つ以上発見できた
-- [ ] 改善版Dockerfileでビルド時間が短縮された
-- [ ] イメージサイズが削減された
-- [ ] 非rootユーザーでの実行ができた
+- [ ] **ハンズオン4: Distrolessイメージが実行できた**
+- [ ] **マルチステージビルドでイメージサイズが大幅削減された**
+- [ ] **シェルアクセスが不可能なことを確認できた**
+- [ ] **脆弱性数の減少を確認できた**
 
-## イメージサイズの最適化
 
-### マルチステージビルドの例
-```Dockerfile
-# ビルドステージ
-FROM python:3.13 as builder
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install --user -r requirements.txt
-
-# 実行ステージ
-FROM python:3.13-slim
-WORKDIR /app
-COPY --from=builder /root/.local /root/.local
-COPY . .
-ENV PATH=/root/.local/bin:$PATH
-CMD ["python", "main.py"]
-```
-
-## まとめ
-
-この章では以下を学習しました：
-
-:white_check_mark: **Dockerfileの基本構文**とイメージビルドの流れ  
-:white_check_mark: **効率的なレイヤー構成**を考慮したDockerfile作成  
-:white_check_mark: **実用的なWebアプリケーション**のコンテナ化  
-:white_check_mark: **セキュリティとパフォーマンス**を考慮したベストプラクティス
+### 達成レベル
+- **初級**: ハンズオン1-2完了
+- **中級**: ハンズオン3完了（問題解決能力）  
+- **上級**: ハンズオン4完了（プロダクション品質）
 
 ### 次のステップ
 - [第2部: Docker Compose基礎編](./02_compose_basic.md) - 複数コンテナの連携を学ぼう
-
-::: tip :bulb: ハンズオン完了！
-お疲れさまでした！作成したコンテナを使って、さらなるカスタマイズに挑戦してみてください。
-:::
