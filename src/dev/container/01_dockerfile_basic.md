@@ -331,33 +331,6 @@ README.md
 
 :::
 
-## よくある問題と解決方法
-
-### 問題1: ポート8080が既に使用中
-```sh
-# 使用中のポートを確認
-netstat -tulpn | grep :8080
-
-# 別のポートを使用
-docker run -p 8081:8080 simple-web-<user name>
-```
-
-### 問題2: イメージが見つからない
-```sh
-# 作成したイメージを確認
-docker images
-
-# タグ名を正確に指定
-docker run hello-docker-yourname
-```
-
-### 問題3: コンテナが停止しない
-```sh
-# 強制停止
-docker ps  # 実行中のコンテナIDを確認
-docker stop <container_id>
-docker kill <container_id>  # 強制終了
-```
 
 ## ハンズオン4: 究極の最適化 - Distroless & マルチステージビルド
 
@@ -487,17 +460,35 @@ docker build --target builder -t flask-debug .
 docker run -it flask-debug bash
 ```
 
-### :rocket: 発展課題
 
-1. **他のDistrolessイメージでの実装**
-   - Node.js Distroless版
-   - Java Distroless版
+## よくある問題と解決方法
 
-2. **セキュリティスキャンの自動化**
-   - CI/CDパイプラインでの脆弱性チェック
+### 問題1: ポート8080が既に使用中
+```sh
+# 使用中のポートを確認
+netstat -tulpn | grep :8080
 
-3. **ゼロダウンタイムデプロイメント**
-   - ヘルスチェック + ローリングアップデート
+# 別のポートを使用
+docker run -p 8081:8080 simple-web-<user name>
+```
+
+### 問題2: イメージが見つからない
+```sh
+# 作成したイメージを確認
+docker images
+
+# タグ名を正確に指定
+docker run hello-docker-yourname
+```
+
+### 問題3: コンテナが停止しない
+```sh
+# 強制停止
+docker ps  # 実行中のコンテナIDを確認
+docker stop <container_id>
+docker kill <container_id>  # 強制終了
+```
+
 
 ## 学習チェックリスト
 
