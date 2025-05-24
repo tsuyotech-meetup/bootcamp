@@ -49,7 +49,7 @@ cd 01-basic
 ### :memo: 実装
 
 **1. Dockerfileを作成**
-```sh
+```Dockerfile
 # Dockerfile
 FROM ubuntu:24.04
 
@@ -127,7 +127,7 @@ if __name__ == '__main__':
 ```
 
 **2. Dockerfileを作成**
-```sh
+```Dockerfile
 # Dockerfile
 FROM python:3.13
 
@@ -175,7 +175,7 @@ FROM python:3.13
 ```
 
 ### 2. レイヤー数を最適化
-```
+```Dockerfile
 # 良い例: RUNを結合
 RUN apt-get update && \
     apt-get install -y curl && \
@@ -189,7 +189,7 @@ RUN apt-get clean
 ```
 
 ### 3. キャッシュを効率的に活用
-```
+```Dockerfile
 # 良い例: 変更頻度の低いものを先に
 COPY requirements.txt .
 RUN pip install -r requirements.txt
@@ -201,7 +201,7 @@ RUN pip install -r requirements.txt
 ```
 
 ### 4. セキュリティを考慮
-```
+```Dockerfile
 # 非rootユーザーで実行
 RUN useradd -m appuser
 USER appuser
@@ -256,7 +256,7 @@ GitHubから取得したコードを確認し、以下の問題を見つけて�
 ### :mag: 改善効果の測定
 修正前後でイメージサイズとビルド時間を比較してみましょう：
 
-```h
+```sh
 # イメージサイズの確認
 docker images flask-app-before
 docker images flask-app-after
@@ -271,7 +271,7 @@ time docker build -t flask-app-after .
 ::: details 解答例を見る
 
 **改善版Dockerfileの例**
-```dockerfile
+```Dockerfile
 # Dockerfile.improved
 FROM python:3.13-slim
 
@@ -363,7 +363,7 @@ docker kill <container_id>  # 強制終了
 ## イメージサイズの最適化
 
 ### マルチステージビルドの例
-```dockerfile
+```Dockerfile
 # ビルドステージ
 FROM python:3.13 as builder
 WORKDIR /app
