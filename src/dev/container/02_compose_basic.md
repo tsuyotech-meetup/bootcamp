@@ -62,14 +62,14 @@ cd 02-compose
 
 **1. プロジェクト構成の準備**
 ```sh
-mkdir hands-on1
-cd hands-on1
+mkdir hands-on1-<user name>
+cd hands-on1-<user name>
 mkdir nginx
 ```
 
 **ディレクトリ構成**
 ```
-hands-on1/
+hands-on1-<user name>/
 ├── compose.yml
 └── nginx/
     └── nginx.conf
@@ -134,7 +134,9 @@ http {
 # compose.yml
 services:
   app:
-    image: flask-app-distroless
+    image: flask-app-distroless-<user name>
+    # image: flask-app-before-<user name>
+    # image: flask-app-after-<user name>
     restart: unless-stopped
     networks:
       - app-network
@@ -223,15 +225,14 @@ docker compose logs -f app
 
 **1. プロジェクト構成**
 ```sh
-cd ../
-mkdir hands-on2
-cd hands-on2
+mkdir hands-on2-<user name>
+cd hands-on2-<user name>
 mkdir -p app/templates mysql
 ```
 
 **ディレクトリ構成**
 ```
-hands-on2/
+hands-on2-<user name>/
 ├── compose.yml
 ├── Dockerfile
 ├── app/
@@ -556,6 +557,9 @@ docker compose down
 
 # 再度起動してデータが保持されているか確認
 docker compose up -d
+
+# Volumeごと削除
+docker compose down -v
 ```
 
 
@@ -576,6 +580,7 @@ docker compose up -d
 **4. サービス間通信**
 - Docker Composeが自動的に内部DNSを提供
 - `app`から`db:3306`でMySQLにアクセス可能
+
 
 ## よくある問題と解決方法
 
