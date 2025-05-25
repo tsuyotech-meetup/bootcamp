@@ -119,11 +119,13 @@ http {
             proxy_read_timeout 60s;
         }
         
-        # ヘルスチェック用エンドポイント
-        location /nginx-health {
+        # NGINX ステータス（監視用）
+        location /nginx-status {
+            stub_status on;
             access_log off;
-            return 200 "healthy\n";
-            add_header Content-Type text/plain;
+            allow 127.0.0.1;
+            allow 10.0.0.0/8;
+            deny all;
         }
     }
 }
@@ -179,8 +181,8 @@ docker compose logs -f
 # ブラウザまたはcurlでアクセス
 curl http://localhost:8080/
 
-# NGINXのヘルスチェック
-curl http://localhost:8080/nginx-health
+# NGINXのステータス確認
+curl http://localhost:8080/nginx-status
 ```
 
 **2. サービス間通信の確認**
@@ -602,7 +604,7 @@ mkdir -p app/src/templates nginx mysql
 ```
 flask-web-system/
 ├── compose.yml
-├── .env                    # 環境変数管理
+├── .env                # 環境変数管理
 ├── app/
 │   ├── Dockerfile
 │   └── src/
@@ -610,7 +612,7 @@ flask-web-system/
 │       │   └── index.html
 │       ├── main.py
 │       ├── requirements.txt
-│       └── config.py        # 設定管理
+│       └── config.py  # 設定管理
 ├── nginx/
 │   └── nginx.conf     # 開発用設定
 └── mysql/
@@ -909,7 +911,7 @@ mysql-connector-python==9.3.0
 
 **7. Dockerfileを作成**
 ```dockerfile
-# app/src/Dockerfile
+# app/Dockerfile
 FROM python:3.13-slim
 
 # 作業ディレクトリを設定
@@ -1041,6 +1043,7 @@ GROUP BY DATE(timestamp), server_id;
 
 **7. 三層構成のcompose.yml**
 ```yaml
+# compose.yml
 services:
   # アプリケーション層（スケーラブル）
   app:
@@ -1167,10 +1170,6 @@ done
 ```sh
 # 各サービスの状態確認
 docker compose exec nginx curl http://localhost/nginx-status
-
-# データベース管理画面
-echo "Database Admin: http://localhost:8080"
-echo "Server: db, Username: web_user, Password: web_password"
 ```
 
 ### :bulb: 学習ポイント
@@ -1271,5 +1270,5 @@ docker images | grep flask
 - [第3部: 実践応用編](./03_practical_usage.md) - より高度な運用技術を学ぼう
 
 ::: tip :bulb: Compose基礎完了！
-複数コンテナの連携システムを構築できるようになりました。次は3層構成やプロダクション運用の技術を学びましょう！
+複数コンテナの連携システムを構築できるようになりました。次はプロダクション運用の技術を学びましょう！
 :::
