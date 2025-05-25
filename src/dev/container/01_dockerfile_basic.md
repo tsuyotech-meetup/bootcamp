@@ -20,10 +20,8 @@ description: Dockerfileの基本的な書き方を学び、実際にWebアプリ
 
 ### 作業ディレクトリの準備
 ```sh
-mkdir docker-handson
-cd docker-handson
-mkdir 01-basic
-cd 01-basic
+mkdir -p docker-handson/01-basic
+cd docker-handson/01-basic
 ```
 
 ## Dockerfileとは
@@ -48,7 +46,19 @@ cd 01-basic
 
 ### :memo: 実装
 
-**1. Dockerfileを作成**
+**1. プロジェクト構成**
+```sh
+mkdir hands-on1
+cd hands-on1
+```
+
+**ディレクトリ構成**
+```
+hands-on1/
+└── Dockerfile
+```
+
+**2. Dockerfileを作成**
 ```Dockerfile
 # Dockerfile
 FROM ubuntu:24.04
@@ -57,13 +67,13 @@ FROM ubuntu:24.04
 CMD ["echo", "Hello, Docker World!"]
 ```
 
-**2. イメージをビルド**
+**3. イメージをビルド**
 ```sh
 docker build -t hello-docker-<user name> .
 # docker build -t hello-docker-conan .
 ```
 
-**3. コンテナを実行**
+**4. コンテナを実行**
 ```sh
 docker run hello-docker-<user name>
 # docker run hello-docker-conan
@@ -87,9 +97,24 @@ Pythonを使ったシンプルなWebサーバーのコンテナを作成しま�
 
 ### :memo: 実装
 
-**1. Pythonアプリケーションを作成**
+**1. プロジェクト構成**
+```sh
+mkdir hands-on2
+cd hands-on2
+
+```
+
+**ディレクトリ構成**
+```
+hands-on2/
+├── Dockerfile
+└── app/
+    └── main.py
+```
+
+**2. Pythonアプリケーションを作成**
 ```python
-# main.py
+# app/main.py
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 import os
 import sys
@@ -126,7 +151,7 @@ if __name__ == '__main__':
         sys.exit(0)
 ```
 
-**2. Dockerfileを作成**
+**3. Dockerfileを作成**
 ```Dockerfile
 # Dockerfile
 FROM python:3.13
@@ -135,7 +160,7 @@ FROM python:3.13
 WORKDIR /app
 
 # アプリケーションファイルをコピー
-COPY main.py .
+COPY ./app/ .
 
 # ポートを公開
 EXPOSE 8080
@@ -144,7 +169,7 @@ EXPOSE 8080
 CMD ["python", "main.py"]
 ```
 
-**3. イメージをビルドして実行**
+**4. イメージをビルドして実行**
 ```sh
 # イメージビルド
 docker build -t simple-web-<user name> .
@@ -217,19 +242,36 @@ ENV DATABASE_URL=${DATABASE_URL}
 - 依存関係を含む実用的なWebアプリケーションのコンテナを作成します。
 - ベストプラクティスに則さないポイントを修正して効率的なDockerfileにリファクタリングする。
 
-**1. 要件ファイルをgitから取得**
-```
-git clone https://github.com/tsuyotech-meetup/bootcamp-docker-sample.git
-cd bootcamp-docker-sample
+**1. プロジェクト構成**
+```sh
+mkdir hands-on3
+cd hands-on3
 ```
 
-**2. ビルドと実行**
+**ディレクトリ構成**
+```
+hands-on3/
+├── README.md
+├── Dockerfile
+└── app/
+    ├── templates/
+    │   └── index.html
+    ├── main.py
+    └── requirements.txt
+```
+
+**2. 要件ファイルをgitから取得**
+```sh
+git clone https://github.com/tsuyotech-meetup/bootcamp-docker-sample.git .
+```
+
+**3. ビルドと実行**
 ```sh
 # イメージビルド
-docker build -t flask-app-before .
+docker build -t flask-app-before-<user name> .
 
 # コンテナ実行
-docker run -p 5000:5000 flask-app-before
+docker run -p 5000:5000 flask-app-before-<user name>
 ```
 
 ### :white_check_mark: 動作確認
@@ -258,11 +300,11 @@ GitHubから取得したコードを確認し、以下の問題を見つけて�
 
 ```sh
 # イメージサイズの確認
-docker images flask-app-before
-docker images flask-app-after
+docker images flask-app-before-<user name>
+docker images flask-app-after-<user name>
 
 # ビルド時間の測定
-time docker build -t flask-app-after .
+time docker build -t flask-app-after-<user name> .
 ```
 
 ### :thinking: 改善チャレンジ
@@ -390,20 +432,20 @@ CMD ["main.py"]
 **2. イメージビルドと比較**
 ```sh
 # 従来版のサイズ確認
-docker images flask-app-after
+docker images flask-app-after-<user name>
 
 # Distroless版をビルド
-docker build -f Dockerfile.distroless -t flask-app-distroless .
+docker build -f Dockerfile.distroless -t flask-app-distroless-<user name> .
 
 # サイズ比較
-docker images flask-app-after --format "table {{.Repository}}\t{{.Tag}}\t{{.Size}}"
-docker images flask-app-distroless --format "table {{.Repository}}\t{{.Tag}}\t{{.Size}}"
+docker images flask-app-after-<user name> --format "table {{.Repository}}\t{{.Tag}}\t{{.Size}}"
+docker images flask-app-distroless-<user name> --format "table {{.Repository}}\t{{.Tag}}\t{{.Size}}"
 ```
 
 **3. 実行と動作確認**
 ```sh
 # Distroless版を実行
-docker run -p 5000:5000 flask-app-distroless
+docker run -p 5000:5000 flask-app-distroless-<user name>
 ```
 
 ### :white_check_mark: 動作確認
@@ -428,19 +470,19 @@ docker run -p 5000:5000 flask-app-distroless
 **コンテナ内への侵入不可能性をテスト**
 ```sh
 # 標準イメージ: シェルアクセス可能
-docker run -it --rm flask-app-after bash
+docker run -it --rm flask-app-after-<user name> bash
 # → シェルが起動する
 
 # Distrolessイメージ: シェルアクセス不可
-docker run -it --rm flask-app-distroless bash
+docker run -it --rm flask-app-distroless-<user name> bash
 # → エラーが発生（シェルが存在しない）
 ```
 
 **脆弱性スキャンの実践**
 ```sh
 # Docker Scout を使用した脆弱性スキャン（Docker Desktop必要）
-docker scout cves flask-app-after
-docker scout cves flask-app-distroless
+docker scout cves flask-app-after-<user name>
+docker scout cves flask-app-distroless-<user name>
 ```
 
 
@@ -454,10 +496,10 @@ docker scout cves flask-app-distroless
 **デバッグ方法:**
 ```sh
 # デバッグ用にビルドステージのイメージを作成
-docker build --target builder -t flask-debug .
+docker build --target builder -t flask-debug-<user name> .
 
 # ビルドステージでデバッグ
-docker run -it flask-debug bash
+docker run -it flask-debug-<user name> bash
 ```
 
 
@@ -478,7 +520,7 @@ docker run -p 8081:8080 simple-web-<user name>
 docker images
 
 # タグ名を正確に指定
-docker run hello-docker-yourname
+docker run hello-docker-<user name>
 ```
 
 ### 問題3: コンテナが停止しない
