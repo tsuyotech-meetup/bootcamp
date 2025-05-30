@@ -20,8 +20,9 @@ description: Dockerfileの基本的な書き方を学び、実際にWebアプリ
 
 ### 作業ディレクトリの準備
 ```sh
-mkdir -p docker-handson/01-basic
-cd docker-handson/01-basic
+# user nameは各自好きな名前を付けてください。
+mkdir -p docker-handson-<user name>
+cd docker-handson-<user name>
 ```
 
 ## Dockerfileとは
